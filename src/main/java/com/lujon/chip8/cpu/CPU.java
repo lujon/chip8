@@ -9,7 +9,7 @@ public class CPU {
 
   private final Memory memory;
   private final Screen screen;
-  private final int[] registers = new int[16];
+  private final byte[] registers = new byte[16];
   private int programCounter = INITIAL_PC;
   private int indexRegister;
 
@@ -52,7 +52,28 @@ public class CPU {
       case 0x3:
         skipInstructionIfRegisterEqualToValue(instruction.getX(), instruction.getNN());
         break;
+      case 0x4:
+        skipInstructionIfRegisterNotEqualToValue(instruction.getX(), instruction.getNN());
+        break;
       case 0x5:
+        skipInstructionIfRegisterEqualToOtherRegister(instruction.getX(), instruction.getY());
+        break;
+      case 0x6:
+        setRegister(instruction.getX(), instruction.getNN());
+        break;
+      case 0x7:
+        addToRegister(instruction.getX(), instruction.getNN());
+        break;
+      case 0x9:
+        skipInstructionIfRegisterNotEqualToOtherRegister(instruction.getX(), instruction.getY());
+        break;
+      case 0xA:
+        setIndexRegister(instruction.getNNN());
+        break;
+      case 0xD:
+        drawSprite(instruction.getX(), instruction.getY(), instruction.getN());
+        break;
+      case 0xF:
         switch (instruction.getNN()) {
           case 0x55:
             storeRegistersAtIndex(instruction.getX());
@@ -64,32 +85,8 @@ public class CPU {
             throw new RuntimeException("Not implemented: " + instruction);
         }
         break;
-      case 0x6:
-        setRegister(instruction.getX(), instruction.getNN());
-        break;
-      case 0x7:
-        addToRegister(instruction.getX(), instruction.getNN());
-        break;
-      case 0xA:
-        setIndexRegister(instruction.getNNN());
-        break;
-      case 0xD:
-        drawSprite(instruction.getX(), instruction.getY(), instruction.getN());
-        break;
       default:
         throw new RuntimeException("Not implemented: " + instruction);
-    }
-  }
-
-  private void loadRegistersAtIndex(int endRegister) {
-    for (int i = 0; i <= endRegister; i++) {
-      setRegister(i, memory.getByte(indexRegister + i));
-    }
-  }
-
-  private void storeRegistersAtIndex(int endRegister) {
-    for (int i = 0; i <= endRegister; i++) {
-      memory.setByte(indexRegister + i, (byte) getRegister(i));
     }
   }
 
@@ -110,14 +107,35 @@ public class CPU {
     }
   }
 
+  // 4xkk - SNE Vx, byte
+  private void skipInstructionIfRegisterNotEqualToValue(int register, int value) {
+    if (getRegister(register) != value) {
+      programCounter += 2;
+    }
+  }
+
+  // 5xy0 - SE Vx, Vy
+  private void skipInstructionIfRegisterEqualToOtherRegister(int register1, int register2) {
+    if (getRegister(register1) == getRegister(register2)) {
+      programCounter += 2;
+    }
+  }
+
   // 6xkk - LD Vx, byte
   private void setRegister(int register, int value) {
-    registers[register] = value;
+    registers[register] = (byte) value;
   }
 
   // 7xkk - ADD Vx, byte
   private void addToRegister(int register, int value) {
     registers[register] += value;
+  }
+
+  // 9xy0 - SNE Vx, Vy
+  private void skipInstructionIfRegisterNotEqualToOtherRegister(int register1, int register2) {
+    if (getRegister(register1) != getRegister(register2)) {
+      programCounter += 2;
+    }
   }
 
   // Annn - LD I, addr
@@ -160,12 +178,26 @@ public class CPU {
     }
   }
 
+  // Fx55 - LD [I], Vx
+  private void storeRegistersAtIndex(int endRegister) {
+    for (int i = 0; i <= endRegister; i++) {
+      memory.setByte(indexRegister + i, (byte) getRegister(i));
+    }
+  }
+
+  // Fx65 - LD Vx, [I]
+  private void loadRegistersAtIndex(int endRegister) {
+    for (int i = 0; i <= endRegister; i++) {
+      setRegister(i, memory.getByte(indexRegister + i));
+    }
+  }
+
   public int getProgramCounter() {
     return programCounter;
   }
 
   public int getRegister(int index) {
-    return registers[index];
+    return registers[index] & 0xFF;
   }
 
   public int getIndexRegister() {
