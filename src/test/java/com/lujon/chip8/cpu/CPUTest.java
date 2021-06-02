@@ -64,4 +64,17 @@ public class CPUTest {
 
     assertEquals(0xFF, cpu.getRegister(0xA));
   }
+
+  @Test
+  public void testSetIndexRegister() {
+    Memory memory = new Memory();
+    Screen screen = new Screen();
+    CPU cpu = new CPU(memory, screen);
+
+    assertEquals(0x000, cpu.getIndexRegister());
+
+    cpu.executeInstruction(new Instruction(0xA0FF));
+
+    assertEquals(0x0FF, cpu.getIndexRegister());
+  }
 }

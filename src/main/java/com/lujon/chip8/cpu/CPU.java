@@ -106,7 +106,7 @@ public class CPU {
     int x = registers[xRegister] % 64;
     int y = registers[yRegister] % 32;
 
-    registers[0xF] = 0;
+    setRegister(0xF, 0);
 
     for (int row = 0; row < numRows; row++) {
       byte sprite = memory.getByte(indexRegister + row);
@@ -133,7 +133,7 @@ public class CPU {
         screen.setPixel(screenXCoord, screenYCoord, !previousPixel && newPixel);
 
         if(previousPixel && newPixel){
-          registers[0xF] = (byte)0x01;
+          setRegister(0xF, 0x01);
         }
 
         if (screenXCoord == screen.getWidth() - 1) {
@@ -153,5 +153,9 @@ public class CPU {
 
   public int getRegister(int index) {
     return registers[index];
+  }
+
+  public int getIndexRegister() {
+    return indexRegister;
   }
 }
