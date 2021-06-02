@@ -19,32 +19,25 @@ public class CPU {
   }
 
   public void executeCycle() {
-    int instruction = fetchInstruction();
+    Instruction instruction = fetchInstruction();
     executeInstruction(instruction);
   }
 
-  private int fetchInstruction() {
+  private Instruction fetchInstruction() {
     int instruction = (memory.getByte(pc) << 8) | (memory.getByte(pc + 1) & 0xFF);
     pc += 2;
-    return instruction;
+    return new Instruction(instruction);
   }
 
-  private void executeInstruction(int instruction) {
-
-    int[] opCodeNibble = new int[4];
-    opCodeNibble[0] = ((instruction & 0xF000) >> 12);
-    opCodeNibble[1] = ((instruction & 0x0F00) >> 8);
-    opCodeNibble[2] = ((instruction & 0x00F0) >> 4);
-    opCodeNibble[3] = (instruction & 0x000F);
-
-    switch (opCodeNibble[0]) {
+  private void executeInstruction(Instruction instruction) {
+    switch (instruction.getOpCode()) {
       case 0x0:
-        if (instruction == 0x00E0) {
+        if (instruction.getNN() == 0x00E0) {
           screen.clear();
         }
         break;
       case 0x1:
-        pc = instruction & 0x0FFF;
+        pc = instruction.getNNN();
         break;
       case 0x2:
         break;
@@ -55,29 +48,29 @@ public class CPU {
       case 0x5:
         break;
       case 0x6:
-        registers[opCodeNibble[1]] = instruction & 0x00FF;
+        registers[instruction.getX()] = instruction.getNN();
         break;
       case 0x7:
-        registers[opCodeNibble[1]] = registers[opCodeNibble[1]] + (instruction & 0x00FF);
+        registers[instruction.getX()] += instruction.getNN();
         break;
       case 0x8:
         break;
       case 0x9:
         break;
       case 0xA:
-        indexRegister = instruction & 0x0FFF;
+        indexRegister = instruction.getNNN();
         break;
       case 0xB:
         break;
       case 0xC:
         break;
       case 0xD:
-        int xCoord = (registers[opCodeNibble[1]] & 0xFF) % 64;
-        int yCoord = (registers[opCodeNibble[2]] & 0xFF) % 32;
+        int xCoord = (registers[instruction.getX()]) % 64;
+        int yCoord = (registers[instruction.getY()]) % 32;
 
         registers[0xF] = 0;
 
-        for (int pixelRow = 0; pixelRow < opCodeNibble[3]; pixelRow++) {
+        for (int pixelRow = 0; pixelRow < instruction.getN(); pixelRow++) {
           byte sprite = memory.getByte(indexRegister + pixelRow);
 
           boolean[] bits = new boolean[] {
