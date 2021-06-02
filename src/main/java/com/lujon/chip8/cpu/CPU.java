@@ -4,7 +4,6 @@ import com.lujon.chip8.memory.Memory;
 import com.lujon.chip8.screen.Screen;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Stack;
 
 public class CPU {
 
@@ -38,8 +37,6 @@ public class CPU {
   }
 
   public void executeInstruction(Instruction instruction) {
-    System.out.println("Executing " +  instruction.toString());
-
     switch (instruction.getOpCode()) {
       case 0x0:
         switch (instruction.getNN()) {

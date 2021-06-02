@@ -18,10 +18,15 @@ public class Chip8Emulator {
   }
 
   public void run() throws InterruptedException {
+    int numCycles = 0;
     while (true) {
       cpu.executeInstructionFromMemory();
-      screen.draw();
-      Thread.sleep(100);
+      numCycles += 1;
+      if (numCycles == 10) {
+        screen.draw();
+        numCycles = 0;
+      }
+      Thread.sleep(10);
     }
   }
 
