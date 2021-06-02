@@ -50,4 +50,18 @@ public class CPUTest {
 
     assertEquals(0x0F, cpu.getRegister(0xA));
   }
+
+  @Test
+  public void testAddToRegister() {
+    Memory memory = new Memory();
+    Screen screen = new Screen();
+    CPU cpu = new CPU(memory, screen);
+
+    assertEquals(0x00, cpu.getRegister(0xA));
+
+    cpu.executeInstruction(new Instruction(0x6A0F));
+    cpu.executeInstruction(new Instruction(0x7AF0));
+
+    assertEquals(0xFF, cpu.getRegister(0xA));
+  }
 }
