@@ -18,7 +18,7 @@ public class Chip8EmulatorTest {
         .getResourceAsStream("ibm-logo.ch8");
     memory.init(Objects.requireNonNull(Objects.requireNonNull(ibmLogoFileStream).readAllBytes()));
 
-    Screen screen = new Screen();
+    Screen screen = new Screen(false);
     Chip8Emulator chip8Emulator = new Chip8Emulator(memory, screen);
 
     chip8Emulator.runFixedCycles(20);

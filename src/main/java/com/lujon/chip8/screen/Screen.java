@@ -14,13 +14,24 @@ import javax.swing.WindowConstants;
 public class Screen {
 
   private final JFrame frame;
+  private final boolean displayScreen;
   private boolean[][] pixels = new boolean[32][64];
 
   public Screen() {
-    frame = new JFrame("Chip-8");
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
+    this(true);
+  }
+
+  public Screen(boolean displayScreen) {
+    this.displayScreen = displayScreen;
+
+    if (displayScreen) {
+      this.frame = new JFrame("Chip-8");
+      this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      this.frame.setLocationRelativeTo(null);
+      this.frame.setVisible(true);
+    } else {
+      this.frame = null;
+    }
   }
 
   public int getWidth() {
@@ -44,6 +55,9 @@ public class Screen {
   }
 
   public void draw() {
+    if (!displayScreen) {
+      return;
+    }
 
     BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 

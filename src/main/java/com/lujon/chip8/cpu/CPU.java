@@ -47,8 +47,6 @@ public class CPU {
       case 0x1:
         jumpToAddress(instruction.getNNN());
         break;
-      case 0x2:
-        break;
       case 0x3:
         skipInstructionIfRegisterEqualToValue(instruction.getX(), instruction.getNN());
         break;

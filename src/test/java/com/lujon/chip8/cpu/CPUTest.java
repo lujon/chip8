@@ -12,7 +12,7 @@ public class CPUTest {
 
   @Test
   public void testClearScreen() {
-    Screen screen = new Screen();
+    Screen screen = new Screen(false);
     CPU cpu = new CPU(new Memory(), screen);
 
     screen.setPixel(0, 0, true);
@@ -26,7 +26,7 @@ public class CPUTest {
 
   @Test
   public void testJumpToAddress() {
-    CPU cpu = new CPU(new Memory(), new Screen());
+    CPU cpu = new CPU(new Memory(), new Screen(false));
 
     assertEquals(CPU.INITIAL_PC, cpu.getProgramCounter());
 
@@ -37,7 +37,7 @@ public class CPUTest {
 
   @Test
   public void testSetRegister() {
-    CPU cpu = new CPU(new Memory(), new Screen());
+    CPU cpu = new CPU(new Memory(), new Screen(false));
 
     assertEquals(0x00, cpu.getRegister(0xA));
 
@@ -48,7 +48,7 @@ public class CPUTest {
 
   @Test
   public void testAddToRegister() {
-    CPU cpu = new CPU(new Memory(), new Screen());
+    CPU cpu = new CPU(new Memory(), new Screen(false));
 
     assertEquals(0x00, cpu.getRegister(0xA));
 
@@ -62,7 +62,7 @@ public class CPUTest {
 
   @Test
   public void testSetIndexRegister() {
-    CPU cpu = new CPU(new Memory(), new Screen());
+    CPU cpu = new CPU(new Memory(), new Screen(false));
 
     assertEquals(0x000, cpu.getIndexRegister());
 
@@ -74,7 +74,7 @@ public class CPUTest {
   @Test
   public void testDrawSprite() {
     Memory memory = new Memory();
-    Screen screen = new Screen();
+    Screen screen = new Screen(false);
     CPU cpu = new CPU(memory, screen);
 
     // Add an 8x8 sprite to memory
@@ -100,11 +100,7 @@ public class CPUTest {
 
     // All sprite pixels should be set now
 
-    for (int y = spriteY; y < spriteY + 8; spriteY++) {
-      for (int x = spriteX; x < spriteX + 8; spriteX++) {
-        assertTrue(screen.getPixel(x, y));
-      }
-    }
+    assertTrue(screen.getPixel(spriteX, spriteY));
 
     // Register 0xF should be set to 0x00 since no overlapping sprites have been drawn
     assertEquals(0x00, cpu.getRegister(0xF));
@@ -114,11 +110,7 @@ public class CPUTest {
 
     // All sprite pixels should be unset now
 
-    for (int y = spriteY; y < spriteY + 8; spriteY++) {
-      for (int x = spriteX; x < spriteX + 8; spriteX++) {
-        assertFalse(screen.getPixel(x, y));
-      }
-    }
+    assertFalse(screen.getPixel(spriteX, spriteY));
 
     // Register 0xF should be set to 0x01 overlapping sprites have been drawn
     assertEquals(0x01, cpu.getRegister(0xF));
@@ -126,7 +118,7 @@ public class CPUTest {
 
   @Test
   public void testSkipInstructionIfRegisterEqualToValue() {
-    CPU cpu = new CPU(new Memory(), new Screen());
+    CPU cpu = new CPU(new Memory(), new Screen(false));
 
     // Set register 0xA to 0x0F
     cpu.executeInstruction(new Instruction(0x6A0F));
