@@ -33,8 +33,21 @@ public class CPUTest {
 
     assertEquals(CPU.INITIAL_PC, cpu.getProgramCounter());
 
-    cpu.executeInstruction(new Instruction(0x1001));
+    cpu.executeInstruction(new Instruction(0x100F));
 
-    assertEquals(0x001, cpu.getProgramCounter());
+    assertEquals(0x00F, cpu.getProgramCounter());
+  }
+
+  @Test
+  public void testSetRegister() {
+    Memory memory = new Memory();
+    Screen screen = new Screen();
+    CPU cpu = new CPU(memory, screen);
+
+    assertEquals(0x00, cpu.getRegister(0xA));
+
+    cpu.executeInstruction(new Instruction(0x6A0F));
+
+    assertEquals(0x0F, cpu.getRegister(0xA));
   }
 }

@@ -150,4 +150,8 @@ public class CPU {
   public int getProgramCounter() {
     return programCounter;
   }
+
+  public int getRegister(int index) {
+    return registers[index];
+  }
 }
