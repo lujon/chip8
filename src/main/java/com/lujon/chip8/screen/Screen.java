@@ -1,4 +1,4 @@
-package com.lujon.chip8;
+package com.lujon.chip8.screen;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-public class Display {
+public class Screen {
 
   private boolean[][] pixels = new boolean[32][64];
 
@@ -74,8 +74,8 @@ public class Display {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Display display = (Display) o;
-    return Arrays.equals(pixels, display.pixels);
+    Screen screen = (Screen) o;
+    return Arrays.equals(pixels, screen.pixels);
   }
 
   @Override

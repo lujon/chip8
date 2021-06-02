@@ -1,4 +1,4 @@
-package com.lujon.chip8;
+package com.lujon.chip8.memory;
 
 public class Memory {
 
