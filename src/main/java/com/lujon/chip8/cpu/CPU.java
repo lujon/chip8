@@ -108,40 +108,29 @@ public class CPU {
 
     setRegister(0xF, 0);
 
-    for (int row = 0; row < numRows; row++) {
-      byte sprite = memory.getByte(indexRegister + row);
+    for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+      byte sprite = memory.getByte(indexRegister + rowIndex);
 
-      boolean[] bits = new boolean[] {
-          (sprite & 0b10000000) != 0,
-          (sprite & 0b01000000) != 0,
-          (sprite & 0b00100000) != 0,
-          (sprite & 0b00010000) != 0,
-          (sprite & 0b00001000) != 0,
-          (sprite & 0b00000100) != 0,
-          (sprite & 0b00000010) != 0,
-          (sprite & 0b00000001) != 0,
-      };
-
-      int screenYCoord = y + row;
+      int screenY = y + rowIndex;
 
       for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
-        int screenXCoord = x + bitIndex;
+        int screenX = x + bitIndex;
 
-        boolean previousPixel = screen.getPixel(screenXCoord, screenYCoord);
-        boolean newPixel = bits[bitIndex];
+        boolean previousPixel = screen.getPixel(screenX, screenY);
+        boolean newPixel = (sprite >> (7-bitIndex) & 1) == 0x1;
 
-        screen.setPixel(screenXCoord, screenYCoord, !previousPixel && newPixel);
+        screen.setPixel(screenX, screenY, !previousPixel && newPixel);
 
         if(previousPixel && newPixel){
           setRegister(0xF, 0x01);
         }
 
-        if (screenXCoord == screen.getWidth() - 1) {
+        if (screenX == screen.getWidth() - 1) {
           break;
         }
       }
 
-      if (screenYCoord == screen.getHeight() - 1) {
+      if (screenY == screen.getHeight() - 1) {
         break;
       }
     }
