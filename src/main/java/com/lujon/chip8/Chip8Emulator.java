@@ -10,9 +10,19 @@ import java.util.Objects;
 public class Chip8Emulator {
 
   private final CPU cpu;
+  private final Screen screen;
 
   public Chip8Emulator(Memory memory, Screen screen) {
+    this.screen = screen;
     this.cpu = new CPU(memory, screen);
+  }
+
+  public void run() throws InterruptedException {
+    while (true) {
+      cpu.executeInstructionFromMemory();
+      screen.draw();
+      Thread.sleep(100);
+    }
   }
 
   public void runFixedCycles(int numCycles) {
@@ -22,7 +32,7 @@ public class Chip8Emulator {
     }
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     Memory memory = new Memory();
     InputStream ibmLogoFileStream = memory.getClass().getClassLoader()
         .getResourceAsStream("test_opcode.ch8");
@@ -32,8 +42,6 @@ public class Chip8Emulator {
 
     Chip8Emulator chip8Emulator = new Chip8Emulator(memory, screen);
 
-    chip8Emulator.runFixedCycles(1000);
-
-    screen.show();
+    chip8Emulator.run();
   }
 }

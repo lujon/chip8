@@ -13,7 +13,15 @@ import javax.swing.WindowConstants;
 
 public class Screen {
 
+  private final JFrame frame;
   private boolean[][] pixels = new boolean[32][64];
+
+  public Screen() {
+    frame = new JFrame("Chip-8");
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
+  }
 
   public int getWidth() {
     return pixels[0].length;
@@ -35,7 +43,7 @@ public class Screen {
     pixels = new boolean[32][64];
   }
 
-  public void show() {
+  public void draw() {
 
     BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -52,18 +60,15 @@ public class Screen {
         new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
     after = scaleOp.filter(image, after);
 
-    JFrame editorFrame = new JFrame("Chip-8");
-    editorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     ImageIcon imageIcon = new ImageIcon(after);
     JLabel jLabel = new JLabel();
     jLabel.setIcon(imageIcon);
-    editorFrame.getContentPane().add(jLabel, BorderLayout.CENTER);
+    frame.getContentPane().removeAll();
+    frame.getContentPane().add(jLabel, BorderLayout.CENTER);
 
-    editorFrame.pack();
-    editorFrame.setLocationRelativeTo(null);
-    editorFrame.setVisible(true);
-
+    frame.pack();
+    frame.repaint();
   }
 
   @Override

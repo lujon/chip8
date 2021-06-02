@@ -24,16 +24,24 @@ public class CPU {
   }
 
   private Instruction fetchInstruction() {
-    int instruction = (memory.getByte(programCounter) << 8) | (memory.getByte(programCounter + 1) & 0xFF);
+    byte firstByte = memory.getByte(programCounter);
+    byte secondByte = memory.getByte(programCounter + 1);
+    int instruction = (firstByte & 0xFF) << 8 | secondByte & 0xFF;
+
     programCounter += 2;
+
     return new Instruction(instruction);
   }
 
   public void executeInstruction(Instruction instruction) {
+    System.out.println("Executing " +  instruction.toString());
+
     switch (instruction.getOpCode()) {
       case 0x0:
         if (instruction.getNN() == 0xE0) {
           clearScreen();
+        } else {
+          throw new RuntimeException("Not implemented: " + instruction);
         }
         break;
       case 0x1:
@@ -44,9 +52,17 @@ public class CPU {
       case 0x3:
         skipInstructionIfRegisterEqualToValue(instruction.getX(), instruction.getNN());
         break;
-      case 0x4:
-        break;
       case 0x5:
+        switch (instruction.getNN()) {
+          case 0x55:
+            storeRegistersAtIndex(instruction.getX());
+            break;
+          case 0x65:
+            loadRegistersAtIndex(instruction.getX());
+            break;
+          default:
+            throw new RuntimeException("Not implemented: " + instruction);
+        }
         break;
       case 0x6:
         setRegister(instruction.getX(), instruction.getNN());
@@ -54,26 +70,26 @@ public class CPU {
       case 0x7:
         addToRegister(instruction.getX(), instruction.getNN());
         break;
-      case 0x8:
-        break;
-      case 0x9:
-        break;
       case 0xA:
         setIndexRegister(instruction.getNNN());
-        break;
-      case 0xB:
-        break;
-      case 0xC:
         break;
       case 0xD:
         drawSprite(instruction.getX(), instruction.getY(), instruction.getN());
         break;
-      case 0xE:
-        break;
-      case 0xF:
-        break;
       default:
-        break;
+        throw new RuntimeException("Not implemented: " + instruction);
+    }
+  }
+
+  private void loadRegistersAtIndex(int endRegister) {
+    for (int i = 0; i <= endRegister; i++) {
+      setRegister(i, memory.getByte(indexRegister + i));
+    }
+  }
+
+  private void storeRegistersAtIndex(int endRegister) {
+    for (int i = 0; i <= endRegister; i++) {
+      memory.setByte(indexRegister + i, (byte) getRegister(i));
     }
   }
 
