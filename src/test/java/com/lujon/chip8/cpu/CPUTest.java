@@ -123,9 +123,96 @@ public class CPUTest {
     // Set register 0xA to 0x0F
     cpu.executeInstruction(new Instruction(0x6A0F));
 
-    // Set register 0xA to 0x0F
     cpu.executeInstruction(new Instruction(0x3A0F));
 
     assertEquals(CPU.INITIAL_PC + 2, cpu.getProgramCounter());
+  }
+
+  @Test
+  public void testSkipInstructionIfRegisterNotEqualToValue() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0xA to 0x0F
+    cpu.executeInstruction(new Instruction(0x6A0F));
+
+    cpu.executeInstruction(new Instruction(0x4A1F));
+
+    assertEquals(CPU.INITIAL_PC + 2, cpu.getProgramCounter());
+  }
+
+  @Test
+  public void testSkipInstructionIfRegisterEqualToOtherRegister() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0xA to 0x0F
+    cpu.executeInstruction(new Instruction(0x6A0F));
+
+    // Set register 0xB to 0x0F
+    cpu.executeInstruction(new Instruction(0x6B0F));
+
+    cpu.executeInstruction(new Instruction(0x5AB0));
+
+    assertEquals(CPU.INITIAL_PC + 2, cpu.getProgramCounter());
+  }
+
+  @Test
+  public void testSkipInstructionIfRegisterNotEqualToOtherRegister() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0xA to 0x0F
+    cpu.executeInstruction(new Instruction(0x6A0F));
+
+    // Set register 0xB to 0x1F
+    cpu.executeInstruction(new Instruction(0x6B1F));
+
+    cpu.executeInstruction(new Instruction(0x9AB0));
+
+    assertEquals(CPU.INITIAL_PC + 2, cpu.getProgramCounter());
+  }
+
+  @Test
+  public void testStoreRegistersAtIndex() {
+    Memory memory = new Memory();
+    CPU cpu = new CPU(memory, new Screen(false));
+
+    // Set registers 0x0-0x3 to values 0x00-0x03
+    cpu.executeInstruction(new Instruction(0x6000));
+    cpu.executeInstruction(new Instruction(0x6101));
+    cpu.executeInstruction(new Instruction(0x6202));
+    cpu.executeInstruction(new Instruction(0x6303));
+
+    // Set index register to 0x100
+    cpu.executeInstruction(new Instruction(0xA100));
+
+    // Store registers 0-3 at index I
+    cpu.executeInstruction(new Instruction(0xF355));
+
+    assertEquals(0x00, memory.getByte(0x100));
+    assertEquals(0x01, memory.getByte(0x101));
+    assertEquals(0x02, memory.getByte(0x102));
+    assertEquals(0x03, memory.getByte(0x103));
+  }
+
+  @Test
+  public void testLoadRegistersAtIndex() {
+    Memory memory = new Memory();
+    CPU cpu = new CPU(memory, new Screen(false));
+
+    // Set memory 0x100-0x103 to values 0x00-0x03
+    memory.setByte(0x100, (byte) 0x00);
+    memory.setByte(0x101, (byte) 0x01);
+    memory.setByte(0x102, (byte) 0x02);
+    memory.setByte(0x103, (byte) 0x03);
+
+    // Set index register to 0x100
+    cpu.executeInstruction(new Instruction(0xA100));
+
+    // Store registers 0-3 at index I
+    cpu.executeInstruction(new Instruction(0xF365));
+
+    assertEquals(0x00, cpu.getRegister(0));
+    assertEquals(0x01, cpu.getRegister(1));
+    assertEquals(0x02, cpu.getRegister(2));
+    assertEquals(0x03, cpu.getRegister(3));
   }
 }
