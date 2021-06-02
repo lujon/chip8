@@ -291,9 +291,42 @@ public class CPUTest {
     // Set register 1 to 0xFF
     cpu.executeInstruction(new Instruction(0x61FF));
 
-    // V0 = V1
+    // V0 ^= V1
     cpu.executeInstruction(new Instruction(0x8013));
 
     assertEquals(0xF0, cpu.getRegister(0));
+  }
+
+  @Test
+  public void testAddRegisters() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x01
+    cpu.executeInstruction(new Instruction(0x6001));
+
+    // Set register 1 to 0x02
+    cpu.executeInstruction(new Instruction(0x6102));
+
+    // V0 += V1
+    cpu.executeInstruction(new Instruction(0x8014));
+
+    assertEquals(0x03, cpu.getRegister(0));
+  }
+
+  @Test
+  public void testAddRegistersWithCarry() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0xFF
+    cpu.executeInstruction(new Instruction(0x60FF));
+
+    // Set register 1 to 0x0F
+    cpu.executeInstruction(new Instruction(0x610F));
+
+    // V0 += V1
+    cpu.executeInstruction(new Instruction(0x8014));
+
+    assertEquals(0x0E, cpu.getRegister(0));
+    assertEquals(0x1, cpu.getRegister(0xF));
   }
 }
