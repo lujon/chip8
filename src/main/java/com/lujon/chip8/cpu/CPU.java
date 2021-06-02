@@ -5,7 +5,7 @@ import com.lujon.chip8.screen.Screen;
 
 public class CPU {
 
-  private static final int INITIAL_PC = 0x200;
+  public static final int INITIAL_PC = 0x200;
 
   private final Memory memory;
   private final Screen screen;
@@ -145,5 +145,9 @@ public class CPU {
         break;
       }
     }
+  }
+
+  public int getProgramCounter() {
+    return programCounter;
   }
 }

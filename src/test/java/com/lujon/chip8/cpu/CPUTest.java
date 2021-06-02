@@ -1,5 +1,6 @@
 package com.lujon.chip8.cpu;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -22,5 +23,18 @@ public class CPUTest {
     cpu.executeInstruction(new Instruction(0x00E0));
 
     assertFalse(screen.getPixel(0, 0));
+  }
+
+  @Test
+  public void testJumpToAddress() {
+    Memory memory = new Memory();
+    Screen screen = new Screen();
+    CPU cpu = new CPU(memory, screen);
+
+    assertEquals(CPU.INITIAL_PC, cpu.getProgramCounter());
+
+    cpu.executeInstruction(new Instruction(0x1001));
+
+    assertEquals(0x001, cpu.getProgramCounter());
   }
 }
