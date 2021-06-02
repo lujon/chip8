@@ -77,6 +77,15 @@ public class CPU {
           case 0x0:
             setRegisterToOtherRegister(instruction.getX(), instruction.getY());
             break;
+          case 0x1:
+            orRegisters(instruction.getX(), instruction.getY());
+            break;
+          case 0x2:
+            andRegisters(instruction.getX(), instruction.getY());
+            break;
+          case 0x3:
+            xorRegisters(instruction.getX(), instruction.getY());
+            break;
           default:
             throw new RuntimeException("Not implemented: " + instruction);
         }
@@ -162,6 +171,21 @@ public class CPU {
   // 8xy0 - LD Vx, Vy
   private void setRegisterToOtherRegister(int toRegister, int fromRegister) {
     registers[toRegister] = registers[fromRegister];
+  }
+
+  // 8xy1 - OR Vx, Vy
+  private void orRegisters(int register1, int register2) {
+    registers[register1] |= registers[register2];
+  }
+
+  // 8xy2 - AND Vx, Vy
+  private void andRegisters(int register1, int register2) {
+    registers[register1] &= registers[register2];
+  }
+
+  // 8xy3 - XOR Vx, Vy
+  private void xorRegisters(int register1, int register2) {
+    registers[register1] ^= registers[register2];
   }
 
   // 9xy0 - SNE Vx, Vy

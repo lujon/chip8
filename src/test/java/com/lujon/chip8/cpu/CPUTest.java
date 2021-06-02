@@ -248,4 +248,52 @@ public class CPUTest {
 
     assertEquals(0x0F, cpu.getRegister(1));
   }
+
+  @Test
+  public void testOrRegisters() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x0F
+    cpu.executeInstruction(new Instruction(0x600F));
+
+    // Set register 1 to 0xF0
+    cpu.executeInstruction(new Instruction(0x61F0));
+
+    // V0 |= V1
+    cpu.executeInstruction(new Instruction(0x8011));
+
+    assertEquals(0xFF, cpu.getRegister(0));
+  }
+
+  @Test
+  public void testAndRegisters() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x0F
+    cpu.executeInstruction(new Instruction(0x600F));
+
+    // Set register 1 to 0xF0
+    cpu.executeInstruction(new Instruction(0x61F0));
+
+    // V0 &= V1
+    cpu.executeInstruction(new Instruction(0x8012));
+
+    assertEquals(0x00, cpu.getRegister(0));
+  }
+
+  @Test
+  public void testXorRegisters() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x0F
+    cpu.executeInstruction(new Instruction(0x600F));
+
+    // Set register 1 to 0xFF
+    cpu.executeInstruction(new Instruction(0x61FF));
+
+    // V0 = V1
+    cpu.executeInstruction(new Instruction(0x8013));
+
+    assertEquals(0xF0, cpu.getRegister(0));
+  }
 }
