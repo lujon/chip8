@@ -5,9 +5,6 @@ class Instruction {
   private final int instruction;
 
   Instruction(int instruction) {
-    if (instruction > 0xFFFF || instruction < 0) {
-      throw new IllegalArgumentException("Instruction must be between 0x0000 and 0xFFFF: " + instruction);
-    }
     this.instruction = instruction;
   }
 
