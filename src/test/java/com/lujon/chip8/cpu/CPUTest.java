@@ -235,4 +235,17 @@ public class CPUTest {
 
     assertEquals(0x200, cpu.getProgramCounter());
   }
+
+  @Test
+  public void testSetRegisterToOtherRegister() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x0F
+    cpu.executeInstruction(new Instruction(0x600F));
+
+    // Copy register 0 to register 1
+    cpu.executeInstruction(new Instruction(0x8100));
+
+    assertEquals(0x0F, cpu.getRegister(1));
+  }
 }

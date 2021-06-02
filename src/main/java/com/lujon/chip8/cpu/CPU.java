@@ -40,12 +40,15 @@ public class CPU {
 
     switch (instruction.getOpCode()) {
       case 0x0:
-        if (instruction.getNN() == 0xE0) {
-          clearScreen();
-        } else if (instruction.getNN() == 0xEE) {
-          returnFromSubroutine();
-        } else {
-          throw new RuntimeException("Not implemented: " + instruction);
+        switch (instruction.getNN()) {
+          case 0xE0:
+            clearScreen();
+            break;
+          case 0xEE:
+            returnFromSubroutine();
+            break;
+          default:
+            throw new RuntimeException("Not implemented: " + instruction);
         }
         break;
       case 0x1:
@@ -68,6 +71,15 @@ public class CPU {
         break;
       case 0x7:
         addToRegister(instruction.getX(), instruction.getNN());
+        break;
+      case 0x8:
+        switch (instruction.getN()) {
+          case 0x0:
+            setRegisterToOtherRegister(instruction.getX(), instruction.getY());
+            break;
+          default:
+            throw new RuntimeException("Not implemented: " + instruction);
+        }
         break;
       case 0x9:
         skipInstructionIfRegisterNotEqualToOtherRegister(instruction.getX(), instruction.getY());
@@ -145,6 +157,11 @@ public class CPU {
   // 7xkk - ADD Vx, byte
   private void addToRegister(int register, int value) {
     registers[register] += value;
+  }
+
+  // 8xy0 - LD Vx, Vy
+  private void setRegisterToOtherRegister(int toRegister, int fromRegister) {
+    registers[toRegister] = registers[fromRegister];
   }
 
   // 9xy0 - SNE Vx, Vy
