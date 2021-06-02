@@ -18,7 +18,7 @@ public class CPU {
     this.screen = screen;
   }
 
-  public void executeCycle() {
+  public void executeInstructionFromMemory() {
     Instruction instruction = fetchInstruction();
     executeInstruction(instruction);
   }
@@ -29,7 +29,7 @@ public class CPU {
     return new Instruction(instruction);
   }
 
-  private void executeInstruction(Instruction instruction) {
+  public void executeInstruction(Instruction instruction) {
     switch (instruction.getOpCode()) {
       case 0x0:
         if (instruction.getNN() == 0xE0) {

@@ -17,7 +17,7 @@ public class Chip8Emulator {
 
   public void runFixedCycles(int numCycles) {
     while (numCycles > 0) {
-      cpu.executeCycle();
+      cpu.executeInstructionFromMemory();
       numCycles--;
     }
   }
