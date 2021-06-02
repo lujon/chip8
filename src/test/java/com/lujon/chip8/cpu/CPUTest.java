@@ -224,4 +224,15 @@ public class CPUTest {
     assertEquals(0x500, cpu.getProgramCounter());
     assertEquals(CPU.INITIAL_PC, (int) cpu.getStack().peek());
   }
+
+  @Test
+  public void testReturnFromSubroutine() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    cpu.getStack().push(0x200);
+
+    cpu.executeInstruction(new Instruction(0x00EE));
+
+    assertEquals(0x200, cpu.getProgramCounter());
+  }
 }

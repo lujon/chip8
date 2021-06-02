@@ -42,6 +42,8 @@ public class CPU {
       case 0x0:
         if (instruction.getNN() == 0xE0) {
           clearScreen();
+        } else if (instruction.getNN() == 0xEE) {
+          returnFromSubroutine();
         } else {
           throw new RuntimeException("Not implemented: " + instruction);
         }
@@ -96,6 +98,11 @@ public class CPU {
   // 00E0 - CLS
   private void clearScreen() {
     screen.clear();
+  }
+
+  // 00EE - RET
+  private void returnFromSubroutine() {
+    programCounter = stack.pop();
   }
 
   // 1nnn - JP addr
