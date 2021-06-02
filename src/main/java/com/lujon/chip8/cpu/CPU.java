@@ -2,6 +2,7 @@ package com.lujon.chip8.cpu;
 
 import com.lujon.chip8.memory.Memory;
 import com.lujon.chip8.screen.Screen;
+import java.util.Stack;
 
 public class CPU {
 
@@ -12,6 +13,7 @@ public class CPU {
   private final byte[] registers = new byte[16];
   private int programCounter = INITIAL_PC;
   private int indexRegister;
+  private Stack<Integer> stack = new Stack<>();
 
   public CPU(Memory memory, Screen screen) {
     this.memory = memory;
@@ -46,6 +48,9 @@ public class CPU {
         break;
       case 0x1:
         jumpToAddress(instruction.getNNN());
+        break;
+      case 0x2:
+        jumpToSubroutine(instruction.getNNN());
         break;
       case 0x3:
         skipInstructionIfRegisterEqualToValue(instruction.getX(), instruction.getNN());
@@ -95,6 +100,12 @@ public class CPU {
 
   // 1nnn - JP addr
   private void jumpToAddress(int address) {
+    programCounter = address;
+  }
+
+  // 2nnn - CALL addr
+  private void jumpToSubroutine(int address) {
+    stack.push(programCounter);
     programCounter = address;
   }
 
@@ -200,5 +211,9 @@ public class CPU {
 
   public int getIndexRegister() {
     return indexRegister;
+  }
+
+  public Stack<Integer> getStack() {
+    return stack;
   }
 }
