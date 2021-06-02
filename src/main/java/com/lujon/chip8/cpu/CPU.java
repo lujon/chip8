@@ -88,6 +88,9 @@ public class CPU {
           case 0x4:
             addRegisters(instruction.getX(), instruction.getY());
             break;
+          case 0x5:
+            subtractRegisters(instruction.getX(), instruction.getY());
+            break;
           default:
             throw new RuntimeException("Not implemented: " + instruction);
         }
@@ -193,9 +196,19 @@ public class CPU {
   // 8xy4 - ADD Vx, Vy
   private void addRegisters(int register1, int register2) {
     if ((registers[register1] & 0xFF) + (registers[register2] & 0xFF) > 0xFF) {
+      // VF = carry
       registers[0xF] = 1;
     }
     registers[register1] += registers[register2];
+  }
+
+  // 8xy5 - SUB Vx, Vy
+  private void subtractRegisters(int register1, int register2) {
+    if (registers[register1] > registers[register2]) {
+      // VF = NOT borrow
+      registers[0xF] = 1;
+    }
+    registers[register1] -= registers[register2];
   }
 
   // 9xy0 - SNE Vx, Vy
