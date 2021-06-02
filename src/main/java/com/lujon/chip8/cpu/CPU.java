@@ -2,6 +2,8 @@ package com.lujon.chip8.cpu;
 
 import com.lujon.chip8.memory.Memory;
 import com.lujon.chip8.screen.Screen;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Stack;
 
 public class CPU {
@@ -13,7 +15,7 @@ public class CPU {
   private final byte[] registers = new byte[16];
   private int programCounter = INITIAL_PC;
   private int indexRegister;
-  private Stack<Integer> stack = new Stack<>();
+  private final Deque<Integer> stack = new ArrayDeque<>();
 
   public CPU(Memory memory, Screen screen) {
     this.memory = memory;
@@ -261,7 +263,7 @@ public class CPU {
     return indexRegister;
   }
 
-  public Stack<Integer> getStack() {
+  public Deque<Integer> getStack() {
     return stack;
   }
 }
