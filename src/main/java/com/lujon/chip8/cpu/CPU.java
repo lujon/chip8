@@ -42,6 +42,7 @@ public class CPU {
       case 0x2:
         break;
       case 0x3:
+        skipInstructionIfRegisterEqualToValue(instruction.getX(), instruction.getNN());
         break;
       case 0x4:
         break;
@@ -84,6 +85,13 @@ public class CPU {
   // 1nnn - JP addr
   private void jumpToAddress(int address) {
     programCounter = address;
+  }
+
+  // 3xkk - SE Vx, byte
+  private void skipInstructionIfRegisterEqualToValue(int register, int value) {
+    if (getRegister(register) == value) {
+      programCounter += 2;
+    }
   }
 
   // 6xkk - LD Vx, byte

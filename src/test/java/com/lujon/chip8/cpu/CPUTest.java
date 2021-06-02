@@ -123,4 +123,17 @@ public class CPUTest {
     // Register 0xF should be set to 0x01 overlapping sprites have been drawn
     assertEquals(0x01, cpu.getRegister(0xF));
   }
+
+  @Test
+  public void testSkipInstructionIfRegisterEqualToValue() {
+    CPU cpu = new CPU(new Memory(), new Screen());
+
+    // Set register 0xA to 0x0F
+    cpu.executeInstruction(new Instruction(0x6A0F));
+
+    // Set register 0xA to 0x0F
+    cpu.executeInstruction(new Instruction(0x3A0F));
+
+    assertEquals(CPU.INITIAL_PC + 2, cpu.getProgramCounter());
+  }
 }

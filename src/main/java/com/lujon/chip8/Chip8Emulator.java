@@ -25,14 +25,14 @@ public class Chip8Emulator {
   public static void main(String[] args) throws IOException {
     Memory memory = new Memory();
     InputStream ibmLogoFileStream = memory.getClass().getClassLoader()
-        .getResourceAsStream("ibm-logo.ch8");
+        .getResourceAsStream("test_opcode.ch8");
     memory.init(Objects.requireNonNull(Objects.requireNonNull(ibmLogoFileStream).readAllBytes()));
 
     Screen screen = new Screen();
 
     Chip8Emulator chip8Emulator = new Chip8Emulator(memory, screen);
 
-    chip8Emulator.runFixedCycles(20);
+    chip8Emulator.runFixedCycles(1000);
 
     screen.show();
   }
