@@ -37,4 +37,8 @@ public class Memory {
   public byte getByte(int address) {
     return internalMemory[address];
   }
+
+  public void setByte(int address, byte value) {
+    internalMemory[address] = value;
+  }
 }
