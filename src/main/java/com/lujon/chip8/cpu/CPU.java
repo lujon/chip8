@@ -89,10 +89,13 @@ public class CPU {
             addRegisters(instruction.getX(), instruction.getY());
             break;
           case 0x5:
-            subtractRegisters(instruction.getX(), instruction.getY());
+            subtractRegisterXFromY(instruction.getX(), instruction.getY());
             break;
           case 0x6:
             rightShiftRegister(instruction.getX());
+            break;
+          case 0x7:
+            subtractRegisterYFromX(instruction.getX(), instruction.getY());
             break;
           default:
             throw new RuntimeException("Not implemented: " + instruction);
@@ -206,7 +209,7 @@ public class CPU {
   }
 
   // 8xy5 - SUB Vx, Vy
-  private void subtractRegisters(int register1, int register2) {
+  private void subtractRegisterXFromY(int register1, int register2) {
     if (registers[register1] > registers[register2]) {
       // VF = NOT borrow
       registers[0xF] = 1;
@@ -214,7 +217,7 @@ public class CPU {
     registers[register1] -= registers[register2];
   }
 
-  // 8xy5 - SUB Vx, Vy
+  // 8xy6 - SHR Vx {, Vy}
   private void rightShiftRegister(int register) {
     byte registerValue = registers[register];
 
@@ -223,6 +226,16 @@ public class CPU {
     }
 
     registers[register] = (byte) (registerValue >> 1);
+  }
+
+  // 8xy7 - SUBN Vx, Vy
+  private void subtractRegisterYFromX(int register1, int register2) {
+    if (registers[register2] > registers[register1]) {
+      // VF = NOT borrow
+      registers[0xF] = 1;
+    }
+
+    registers[register1] = (byte) (registers[register2] - registers[register1]);
   }
 
   // 9xy0 - SNE Vx, Vy

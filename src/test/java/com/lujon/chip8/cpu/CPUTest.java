@@ -331,7 +331,7 @@ public class CPUTest {
   }
 
   @Test
-  public void testSubtractRegisters() {
+  public void testSubtractRegisterYfromX() {
     CPU cpu = new CPU(new Memory(), new Screen(false));
 
     // Set register 0 to 0x05
@@ -348,7 +348,7 @@ public class CPUTest {
   }
 
   @Test
-  public void testSubtractRegistersWithBorrow() {
+  public void testSubtractRegisterYfromXWithBorrow() {
     CPU cpu = new CPU(new Memory(), new Screen(false));
 
     // Set register 0 to 0x02
@@ -390,5 +390,39 @@ public class CPUTest {
 
     assertEquals(0x1, cpu.getRegister(0));
     assertEquals(0x1, cpu.getRegister(0xF));
+  }
+
+  @Test
+  public void testSubtractRegisterXfromY() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x02
+    cpu.executeInstruction(new Instruction(0x6002));
+
+    // Set register 1 to 0x05
+    cpu.executeInstruction(new Instruction(0x6105));
+
+    // V0 = V1 - V0
+    cpu.executeInstruction(new Instruction(0x8017));
+
+    assertEquals(0x03, cpu.getRegister(0));
+    assertEquals(0x01, cpu.getRegister(0xF));
+  }
+
+  @Test
+  public void testSubtractRegisterXfromYWithBorrow() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x05
+    cpu.executeInstruction(new Instruction(0x6005));
+
+    // Set register 1 to 0x02
+    cpu.executeInstruction(new Instruction(0x6102));
+
+    // V0 = V1 - V0
+    cpu.executeInstruction(new Instruction(0x8017));
+
+    assertEquals(0xFD, cpu.getRegister(0));
+    assertEquals(0x00, cpu.getRegister(0xF));
   }
 }
