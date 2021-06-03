@@ -453,4 +453,23 @@ public class CPUTest {
     assertEquals(0x02, cpu.getRegister(0));
     assertEquals(0x01, cpu.getRegister(0xF));
   }
+
+  @Test
+  public void testStoreBCDRepresentationAtIndex() {
+    Memory memory = new Memory();
+    CPU cpu = new CPU(memory, new Screen(false));
+
+    // Set index register to 0x100
+    cpu.executeInstruction(new Instruction(0xA100));
+
+    // Store value 0x7B (decimal 123) in register 0
+    cpu.executeInstruction(new Instruction(0x607B));
+
+    // Store 100 at I, 20 at I+1 and 3 at I+2
+    cpu.executeInstruction(new Instruction(0xF033));
+
+    assertEquals(1, memory.getByte(0x100) & 0xFF);
+    assertEquals(2, memory.getByte(0x101) & 0xFF);
+    assertEquals(3, memory.getByte(0x102) & 0xFF);
+  }
 }

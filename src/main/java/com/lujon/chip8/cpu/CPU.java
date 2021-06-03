@@ -115,6 +115,9 @@ public class CPU {
         break;
       case 0xF:
         switch (instruction.getNN()) {
+          case 0x33:
+            storeBCDRepresentationAtIndex(instruction.getX());
+            break;
           case 0x55:
             storeRegistersAtIndex(instruction.getX());
             break;
@@ -297,6 +300,21 @@ public class CPU {
         break;
       }
     }
+  }
+
+  // Fx33 - LD B, Vx
+  private void storeBCDRepresentationAtIndex(int register) {
+    int value = registers[register] & 0xFF;
+
+    int hundreds = (value / 100);
+    value -= hundreds * 100;
+
+    int tens = (value / 10);
+    value -= tens * 10;
+
+    memory.setByte(indexRegister, (byte) hundreds);
+    memory.setByte(indexRegister + 1, (byte) tens);
+    memory.setByte(indexRegister + 2, (byte) value);
   }
 
   // Fx55 - LD [I], Vx
