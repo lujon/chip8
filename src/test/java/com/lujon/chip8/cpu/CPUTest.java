@@ -425,4 +425,32 @@ public class CPUTest {
     assertEquals(0xFD, cpu.getRegister(0));
     assertEquals(0x00, cpu.getRegister(0xF));
   }
+
+  @Test
+  public void testLeftShiftRegister() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x01
+    cpu.executeInstruction(new Instruction(0x6001));
+
+    // V0 << V0
+    cpu.executeInstruction(new Instruction(0x801E));
+
+    assertEquals(0x02, cpu.getRegister(0));
+    assertEquals(0x00, cpu.getRegister(0xF));
+  }
+
+  @Test
+  public void testLeftShiftRegisterWithCarry() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x81
+    cpu.executeInstruction(new Instruction(0x6081));
+
+    // V0 << V0
+    cpu.executeInstruction(new Instruction(0x801E));
+
+    assertEquals(0x02, cpu.getRegister(0));
+    assertEquals(0x01, cpu.getRegister(0xF));
+  }
 }
