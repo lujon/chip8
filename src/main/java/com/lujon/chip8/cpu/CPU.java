@@ -91,6 +91,9 @@ public class CPU {
           case 0x5:
             subtractRegisters(instruction.getX(), instruction.getY());
             break;
+          case 0x6:
+            rightShiftRegister(instruction.getX());
+            break;
           default:
             throw new RuntimeException("Not implemented: " + instruction);
         }
@@ -209,6 +212,17 @@ public class CPU {
       registers[0xF] = 1;
     }
     registers[register1] -= registers[register2];
+  }
+
+  // 8xy5 - SUB Vx, Vy
+  private void rightShiftRegister(int register) {
+    byte registerValue = registers[register];
+
+    if ((registerValue & 0x1) == 0x1) {
+      registers[0xF] = 0x01;
+    }
+
+    registers[register] = (byte) (registerValue >> 1);
   }
 
   // 9xy0 - SNE Vx, Vy

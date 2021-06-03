@@ -327,7 +327,7 @@ public class CPUTest {
     cpu.executeInstruction(new Instruction(0x8014));
 
     assertEquals(0x0E, cpu.getRegister(0));
-    assertEquals(0x1, cpu.getRegister(0xF));
+    assertEquals(0x01, cpu.getRegister(0xF));
   }
 
   @Test
@@ -344,7 +344,7 @@ public class CPUTest {
     cpu.executeInstruction(new Instruction(0x8015));
 
     assertEquals(0x03, cpu.getRegister(0));
-    assertEquals(0x1, cpu.getRegister(0xF));
+    assertEquals(0x01, cpu.getRegister(0xF));
   }
 
   @Test
@@ -361,6 +361,34 @@ public class CPUTest {
     cpu.executeInstruction(new Instruction(0x8015));
 
     assertEquals(0xFD, cpu.getRegister(0));
-    assertEquals(0x0, cpu.getRegister(0xF));
+    assertEquals(0x00, cpu.getRegister(0xF));
+  }
+
+  @Test
+  public void testRightShiftRegister() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x02
+    cpu.executeInstruction(new Instruction(0x6002));
+
+    // V0 >> V0
+    cpu.executeInstruction(new Instruction(0x8016));
+
+    assertEquals(0x01, cpu.getRegister(0));
+    assertEquals(0x00, cpu.getRegister(0xF));
+  }
+
+  @Test
+  public void testRightShiftRegisterWithCarry() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Set register 0 to 0x03
+    cpu.executeInstruction(new Instruction(0x6003));
+
+    // V0 >> V0
+    cpu.executeInstruction(new Instruction(0x8016));
+
+    assertEquals(0x1, cpu.getRegister(0));
+    assertEquals(0x1, cpu.getRegister(0xF));
   }
 }
