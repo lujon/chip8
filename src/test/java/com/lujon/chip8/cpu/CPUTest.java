@@ -472,4 +472,17 @@ public class CPUTest {
     assertEquals(2, memory.getByte(0x101) & 0xFF);
     assertEquals(3, memory.getByte(0x102) & 0xFF);
   }
+
+  @Test
+  public void testSetIndexToFontSpriteAddress() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Store value 0x05 in register 0
+    cpu.executeInstruction(new Instruction(0x6005));
+
+    // Set I to address of font sprite 5
+    cpu.executeInstruction(new Instruction(0xF029));
+
+    assertEquals(Memory.FONT_START_ADDRESS + (5 * 5), cpu.getIndexRegister());
+  }
 }

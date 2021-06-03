@@ -115,6 +115,9 @@ public class CPU {
         break;
       case 0xF:
         switch (instruction.getNN()) {
+          case 0x29:
+            setIndexToFontSpriteAddress(instruction.getX());
+            break;
           case 0x33:
             storeBCDRepresentationAtIndex(instruction.getX());
             break;
@@ -300,6 +303,13 @@ public class CPU {
         break;
       }
     }
+  }
+
+  // Fx29 - LD F, Vx
+  private void setIndexToFontSpriteAddress(int register) {
+    int fontSprite = registers[register] & 0xFF;
+
+    indexRegister = Memory.FONT_START_ADDRESS + (5 * fontSprite);
   }
 
   // Fx33 - LD B, Vx

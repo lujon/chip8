@@ -21,7 +21,7 @@ public class Memory {
       0xF0, 0x80, 0xF0, 0x80, 0x80  // F
   };
 
-  private static final int FONT_START_ADDRESS = 0x050;
+  public static final int FONT_START_ADDRESS = 0x050;
   private static final int PROGRAM_START_ADDRESS = 0x200;
 
   private final byte[] internalMemory = new byte[4096];
