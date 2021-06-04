@@ -40,7 +40,7 @@ public class Chip8Emulator {
   public static void main(String[] args) throws IOException, InterruptedException {
     Memory memory = new Memory();
     InputStream ibmLogoFileStream = memory.getClass().getClassLoader()
-        .getResourceAsStream("test_opcode.ch8");
+        .getResourceAsStream("bc_test.ch8");
     memory.init(Objects.requireNonNull(Objects.requireNonNull(ibmLogoFileStream).readAllBytes()));
 
     Screen screen = new Screen();
