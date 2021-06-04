@@ -485,4 +485,17 @@ public class CPUTest {
 
     assertEquals(Memory.FONT_START_ADDRESS + (5 * 5), cpu.getIndexRegister());
   }
+
+  @Test
+  public void testAddRegisterToIndex() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Store value 0x05 in register 0
+    cpu.executeInstruction(new Instruction(0x6005));
+
+    // Add register 0 to index
+    cpu.executeInstruction(new Instruction(0xF01E));
+
+    assertEquals(0x05, cpu.getIndexRegister());
+  }
 }

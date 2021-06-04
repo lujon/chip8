@@ -115,6 +115,9 @@ public class CPU {
         break;
       case 0xF:
         switch (instruction.getNN()) {
+          case 0x1E:
+            addRegisterToIndex(instruction.getX());
+            break;
           case 0x29:
             setIndexToFontSpriteAddress(instruction.getX());
             break;
@@ -296,6 +299,11 @@ public class CPU {
         break;
       }
     }
+  }
+
+  // Fx1E - ADD I, Vx
+  private void addRegisterToIndex(int register) {
+    indexRegister += getRegister(register);
   }
 
   // Fx29 - LD F, Vx
