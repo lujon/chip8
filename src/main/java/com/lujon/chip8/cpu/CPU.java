@@ -89,13 +89,13 @@ public class CPU {
             addRegisters(instruction.getX(), instruction.getY());
             break;
           case 0x5:
-            subtractRegisterXFromY(instruction.getX(), instruction.getY());
+            subtractRegisterVYFromVX(instruction.getX(), instruction.getY());
             break;
           case 0x6:
             rightShiftRegister(instruction.getX());
             break;
           case 0x7:
-            subtractRegisterYFromX(instruction.getX(), instruction.getY());
+            subtractRegisterVXFromVY(instruction.getX(), instruction.getY());
             break;
           case 0xE:
             leftShiftRegister(instruction.getX());
@@ -218,11 +218,12 @@ public class CPU {
   }
 
   // 8xy5 - SUB Vx, Vy
-  private void subtractRegisterXFromY(int register1, int register2) {
-    if (registers[register1] > registers[register2]) {
-      // VF = NOT borrow
-      registers[0xF] = 1;
-    }
+  private void subtractRegisterVYFromVX(int register1, int register2) {
+    int vx = registers[register1] & 0xFF;
+    int vy = registers[register2] & 0xFF;
+
+    registers[0xF] = vx >= vy ? (byte) 1 : (byte) 0;
+
     registers[register1] -= registers[register2];
   }
 
@@ -238,11 +239,11 @@ public class CPU {
   }
 
   // 8xy7 - SUBN Vx, Vy
-  private void subtractRegisterYFromX(int register1, int register2) {
-    if (registers[register2] > registers[register1]) {
-      // VF = NOT borrow
-      registers[0xF] = 1;
-    }
+  private void subtractRegisterVXFromVY(int register1, int register2) {
+    int vx = registers[register1] & 0xFF;
+    int vy = registers[register2] & 0xFF;
+
+    registers[0xF] = vy >= vx ? (byte) 1 : (byte) 0;
 
     registers[register1] = (byte) (registers[register2] - registers[register1]);
   }
