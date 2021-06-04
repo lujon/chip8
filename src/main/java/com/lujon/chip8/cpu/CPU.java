@@ -110,6 +110,9 @@ public class CPU {
       case 0xA:
         setIndexRegister(instruction.getNNN());
         break;
+      case 0xB:
+        jumpToAddressPlusV0(instruction.getNNN());
+        break;
       case 0xD:
         drawSprite(instruction.getX(), instruction.getY(), instruction.getN());
         break;
@@ -264,6 +267,11 @@ public class CPU {
   // Annn - LD I, addr
   private void setIndexRegister(int address) {
     indexRegister = address;
+  }
+
+  // Bnnn - JP V0, addr
+  private void jumpToAddressPlusV0(int address) {
+    programCounter = address + getRegister(0x0);
   }
 
   // Dxyn - DRW Vx, Vy, nibble

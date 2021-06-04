@@ -498,4 +498,17 @@ public class CPUTest {
 
     assertEquals(0x05, cpu.getIndexRegister());
   }
+
+  @Test
+  public void testJumpToAddressPlusV0() {
+    CPU cpu = new CPU(new Memory(), new Screen(false));
+
+    // Store value 0x05 in register 0
+    cpu.executeInstruction(new Instruction(0x6005));
+
+    // Jump to 100 + V0
+    cpu.executeInstruction(new Instruction(0xB100));
+
+    assertEquals(0x105, cpu.getProgramCounter());
+  }
 }
