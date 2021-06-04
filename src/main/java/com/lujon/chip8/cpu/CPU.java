@@ -229,11 +229,9 @@ public class CPU {
 
   // 8xy6 - SHR Vx {, Vy}
   private void rightShiftRegister(int register) {
-    byte registerValue = registers[register];
+    int registerValue = registers[register] & 0xFF;
 
-    if ((registerValue & 0x1) == 0x1) {
-      registers[0xF] = 0x01;
-    }
+    registers[0xF] = (registerValue & 0x1) == 0x1 ? (byte) 0x01 : (byte) 0x00;
 
     registers[register] = (byte) (registerValue >> 1);
   }
@@ -243,18 +241,17 @@ public class CPU {
     int vx = registers[register1] & 0xFF;
     int vy = registers[register2] & 0xFF;
 
-    registers[0xF] = vy >= vx ? (byte) 1 : (byte) 0;
+    registers[0xF] = vy >= vx ? (byte) 0x01 : (byte) 0x00;
 
     registers[register1] = (byte) (registers[register2] - registers[register1]);
   }
 
   // 8xyE - SHL Vx {, Vy}
   private void leftShiftRegister(int register) {
-    byte registerValue = registers[register];
+    int registerValue = registers[register] & 0xFF;
 
-    if ((registerValue & 0x80) == 0x80) {
-      registers[0xF] = 0x01;
-    }
+    registers[0xF] = (registerValue & 0x80) == 0x80 ? (byte) 0x01 : (byte) 0x00;
+
 
     registers[register] = (byte) (registerValue << 1);
   }
