@@ -129,6 +129,9 @@ public class CPU {
         break;
       case 0xF:
         switch (instruction.getNN()) {
+          case 0x07:
+            loadDelayTimer(instruction.getX());
+            break;
           case 0x15:
             setDelayTimer(instruction.getX());
             break;
@@ -327,6 +330,11 @@ public class CPU {
         break;
       }
     }
+  }
+
+  // Fx07 - LD Vx, DT
+  private void loadDelayTimer(int register) {
+    setRegister(register, delayTimer);
   }
 
   // Fx15 - LD DT, Vx
