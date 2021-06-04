@@ -4,6 +4,7 @@ import com.lujon.chip8.memory.Memory;
 import com.lujon.chip8.screen.Screen;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Random;
 
 public class CPU {
 
@@ -11,14 +12,20 @@ public class CPU {
 
   private final Memory memory;
   private final Screen screen;
+  private final Random randomNumberGenerator;
   private final byte[] registers = new byte[16];
   private int programCounter = INITIAL_PC;
   private int indexRegister;
   private final Deque<Integer> stack = new ArrayDeque<>();
 
   public CPU(Memory memory, Screen screen) {
+    this(memory, screen, new Random());
+  }
+
+  public CPU(Memory memory, Screen screen, Random randomNumberGenerator) {
     this.memory = memory;
     this.screen = screen;
+    this.randomNumberGenerator = randomNumberGenerator;
   }
 
   public void executeInstructionFromMemory() {
@@ -112,6 +119,9 @@ public class CPU {
         break;
       case 0xB:
         jumpToAddressPlusV0(instruction.getNNN());
+        break;
+      case 0xC:
+        setRegisterToRandomNumber(instruction.getX(), instruction.getNN());
         break;
       case 0xD:
         drawSprite(instruction.getX(), instruction.getY(), instruction.getN());
@@ -272,6 +282,12 @@ public class CPU {
   // Bnnn - JP V0, addr
   private void jumpToAddressPlusV0(int address) {
     programCounter = address + getRegister(0x0);
+  }
+
+  // Cxkk - RND Vx, byte
+  private void setRegisterToRandomNumber(int register, int andValue) {
+    int randomNumber = randomNumberGenerator.nextInt(256) & andValue;
+    setRegister(register, randomNumber);
   }
 
   // Dxyn - DRW Vx, Vy, nibble

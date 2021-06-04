@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.lujon.chip8.memory.Memory;
 import com.lujon.chip8.screen.Screen;
+import java.util.Random;
 import org.junit.Test;
 
 public class CPUTest {
@@ -510,5 +511,23 @@ public class CPUTest {
     cpu.executeInstruction(new Instruction(0xB100));
 
     assertEquals(0x105, cpu.getProgramCounter());
+  }
+
+  private static class RandomNumberGeneratorStub extends Random {
+    @Override
+    public int nextInt(int bound) {
+      return 123;
+    }
+  }
+
+  @Test
+  public void testSetRegisterToRandom() {
+    CPU cpu = new CPU(new Memory(), new Screen(false), new RandomNumberGeneratorStub());
+
+    // Store random byte & 0x0F in V0
+    cpu.executeInstruction(new Instruction(0xC00F));
+
+
+    assertEquals(123 & 0xF, cpu.getRegister(0x0));
   }
 }
