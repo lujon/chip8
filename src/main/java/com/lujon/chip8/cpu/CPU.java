@@ -185,7 +185,7 @@ public class CPU {
 
   // 7xkk - ADD Vx, byte
   private void addToRegister(int register, int value) {
-    registers[register] += value;
+    setRegister(register, getRegister(register) + value);
   }
 
   // 8xy0 - LD Vx, Vy
@@ -210,50 +210,45 @@ public class CPU {
 
   // 8xy4 - ADD Vx, Vy
   private void addRegisters(int register1, int register2) {
-    if ((registers[register1] & 0xFF) + (registers[register2] & 0xFF) > 0xFF) {
-      // VF = carry
-      registers[0xF] = 1;
-    }
-    registers[register1] += registers[register2];
+    int vx = getRegister(register1);
+    int vy = getRegister(register2);
+
+    setRegister(0xF, vx + vy > 0xFF ? 0x01 : 0x00);
+    setRegister(register1, vx + vy);
   }
 
   // 8xy5 - SUB Vx, Vy
   private void subtractRegisterVYFromVX(int register1, int register2) {
-    int vx = registers[register1] & 0xFF;
-    int vy = registers[register2] & 0xFF;
+    int vx = getRegister(register1);
+    int vy = getRegister(register2);
 
-    registers[0xF] = vx >= vy ? (byte) 1 : (byte) 0;
-
-    registers[register1] -= registers[register2];
+    setRegister(0xF, vx >= vy ? 1 : 0);
+    setRegister(register1, vx - vy);
   }
 
   // 8xy6 - SHR Vx {, Vy}
   private void rightShiftRegister(int register) {
-    int registerValue = registers[register] & 0xFF;
+    int registerValue = getRegister(register);
 
-    registers[0xF] = (registerValue & 0x1) == 0x1 ? (byte) 0x01 : (byte) 0x00;
-
-    registers[register] = (byte) (registerValue >> 1);
+    setRegister(0xF, (registerValue & 0x1) == 0x1 ? 0x01 : 0x00);
+    setRegister(register, registerValue >> 1);
   }
 
   // 8xy7 - SUBN Vx, Vy
   private void subtractRegisterVXFromVY(int register1, int register2) {
-    int vx = registers[register1] & 0xFF;
-    int vy = registers[register2] & 0xFF;
+    int vx = getRegister(register1);
+    int vy = getRegister(register2);
 
-    registers[0xF] = vy >= vx ? (byte) 0x01 : (byte) 0x00;
-
-    registers[register1] = (byte) (registers[register2] - registers[register1]);
+    setRegister(0xF, vy >= vx ? 0x01 : 0x00);
+    setRegister(register1, vy - vx);
   }
 
   // 8xyE - SHL Vx {, Vy}
   private void leftShiftRegister(int register) {
-    int registerValue = registers[register] & 0xFF;
+    int registerValue = getRegister(register);
 
-    registers[0xF] = (registerValue & 0x80) == 0x80 ? (byte) 0x01 : (byte) 0x00;
-
-
-    registers[register] = (byte) (registerValue << 1);
+    setRegister(0xF, (registerValue & 0x80) == 0x80 ? 0x01 : 0x00);
+    setRegister(register, registerValue << 1);
   }
 
   // 9xy0 - SNE Vx, Vy
@@ -270,8 +265,8 @@ public class CPU {
 
   // Dxyn - DRW Vx, Vy, nibble
   private void drawSprite(int xRegister, int yRegister, int numRows) {
-    int x = registers[xRegister] % 64;
-    int y = registers[yRegister] % 32;
+    int x = getRegister(xRegister) % 64;
+    int y = getRegister(yRegister) % 32;
 
     setRegister(0xF, 0);
 
@@ -312,7 +307,7 @@ public class CPU {
 
   // Fx33 - LD B, Vx
   private void storeBCDRepresentationAtIndex(int register) {
-    int value = registers[register] & 0xFF;
+    int value = getRegister(register);
 
     int hundreds = (value / 100);
     value -= hundreds * 100;
