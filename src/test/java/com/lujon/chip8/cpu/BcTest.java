@@ -119,7 +119,7 @@ public class BcTest {
    * vF := 0x00
    * v5 := 0xEE
    * v6 := 0xEF
-   * v5 =- v6 # result is always 0x01
+   * v5 =- v6
    * if vF != 0x01 then FAIL
    */
 
@@ -158,7 +158,7 @@ public class BcTest {
   /**
    * v5 := 0xF0
    * v6 := 0x0F
-   * v5 |= v6 # result is always 0xFF
+   * v5 |= v6
    * if v5 != 0xFF then FAIL
    */
 
@@ -176,7 +176,7 @@ public class BcTest {
   /**
    * v5 := 0xF0
    * v6 := 0x0F
-   * v5 &= v6 # result is always 0x00
+   * v5 &= v6
    * if v5 != 0x00 then FAIL
    */
 
@@ -248,7 +248,7 @@ public class BcTest {
   /**
    * vF := 0x00
    * v5 := 0x01
-   * v5 >>= v0 # result is always 0x00
+   * v5 >>= v0
    * if vF != 0x01 then FAIL
    */
 
@@ -266,7 +266,7 @@ public class BcTest {
   /**
    * vF := 0x01
    * v5 := 0x02
-   * v5 >>= v0 # result is always 0x01
+   * v5 >>= v0
    * if vF != 0x00 then FAIL
    */
 
