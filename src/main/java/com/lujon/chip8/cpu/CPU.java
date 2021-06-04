@@ -16,6 +16,7 @@ public class CPU {
   private final byte[] registers = new byte[16];
   private int programCounter = INITIAL_PC;
   private int indexRegister;
+  private int delayTimer;
   private final Deque<Integer> stack = new ArrayDeque<>();
 
   public CPU(Memory memory, Screen screen) {
@@ -128,6 +129,9 @@ public class CPU {
         break;
       case 0xF:
         switch (instruction.getNN()) {
+          case 0x15:
+            setDelayTimer(instruction.getX());
+            break;
           case 0x1E:
             addRegisterToIndex(instruction.getX());
             break;
@@ -325,6 +329,11 @@ public class CPU {
     }
   }
 
+  // Fx15 - LD DT, Vx
+  private void setDelayTimer(int register) {
+    delayTimer = getRegister(register);
+  }
+
   // Fx1E - ADD I, Vx
   private void addRegisterToIndex(int register) {
     indexRegister += getRegister(register);
@@ -380,5 +389,9 @@ public class CPU {
 
   public Deque<Integer> getStack() {
     return stack;
+  }
+
+  public int getDelayTimer() {
+    return delayTimer;
   }
 }

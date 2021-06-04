@@ -527,7 +527,19 @@ public class CPUTest {
     // Store random byte & 0x0F in V0
     cpu.executeInstruction(new Instruction(0xC00F));
 
-
     assertEquals(123 & 0xF, cpu.getRegister(0x0));
+  }
+
+  @Test
+  public void testSetDelayTimer() {
+    CPU cpu = new CPU(new Memory(), new Screen(false), new RandomNumberGeneratorStub());
+
+    // Store value 0x05 in V0
+    cpu.executeInstruction(new Instruction(0x6005));
+
+    // Set delay timer to V0
+    cpu.executeInstruction(new Instruction(0xF015));
+
+    assertEquals(0x05, cpu.getDelayTimer());
   }
 }
